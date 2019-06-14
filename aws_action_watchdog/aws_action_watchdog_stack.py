@@ -5,7 +5,7 @@ class AwsActionWatchdogStack(cdk.Stack):
     def __init__(self, app: cdk.App, id: str, **kwargs) -> None:
         super().__init__(app, id)
 
-        jsonFileBucket = s3.Bucket(self, 'jsonFileBucket')
+        jsonFileBucket = s3.Bucket(self, 'jsonFileBucket', versioned=True)
 
         with open("aws_action_watchdog/lambda-handler.js", encoding="utf8") as fp:
             handler_code = fp.read()

@@ -1,1 +1,21 @@
--e .
+attrs==19.1.0
+aws-cdk.assets==0.34.0
+aws-cdk.aws-cloudwatch==0.34.0
+aws-cdk.aws-ec2==0.34.0
+aws-cdk.aws-events==0.34.0
+aws-cdk.aws-iam==0.34.0
+aws-cdk.aws-kms==0.34.0
+aws-cdk.aws-lambda==0.34.0
+aws-cdk.aws-logs==0.34.0
+aws-cdk.aws-s3==0.34.0
+aws-cdk.aws-sqs==0.34.0
+aws-cdk.cdk==0.34.0
+aws-cdk.cx-api==0.34.0
+aws-cdk.region-info==0.34.0
+cattrs==0.9.0
+jsii==0.11.2
+mypy-extensions==0.4.1
+publication==0.0.3
+python-dateutil==2.8.0
+six==1.12.0
+typing-extensions==3.7.2
