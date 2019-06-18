@@ -31,7 +31,7 @@ class AwsActionWatchdogStack(cdk.Stack):
 
         alarm = actionWatchdogLambda.metric_all_errors().new_alarm(
             self,
-            'lambdaErrorAlarm2',
+            'lambdaErrorAlarm',
             threshold=0,
             evaluation_periods=1,
             comparison_operator=cloudwatch.ComparisonOperator.GreaterThanThreshold,
