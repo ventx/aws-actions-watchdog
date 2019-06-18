@@ -68,7 +68,7 @@ function getActions(data) {
     "let _ = { has: function () { return false; }, extend: function () { }};";
   defineTypes += "let window = { EnvInfo: {} };";
   data = defineTypes + data + ";app;";
-  let result = vm.runInThisContext(data, url);
+  let result = vm.runInNewContext(data);
   let listOfListOfActions = Object.values(
     result.PolicyEditorConfig.serviceMap
   ).map(x => x.Actions.map(a => x.StringPrefix + ":" + a));
