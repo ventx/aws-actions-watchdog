@@ -6,9 +6,12 @@ class AwsActionWatchdogStack(cdk.Stack):
     def __init__(self, app: cdk.App, id: str, **kwargs) -> None:
         super().__init__(app, id)
 
-        jsonFileBucket = s3.Bucket(self, 'jsonFileBucket', versioned=True, removal_policy=cdk.DeletionPolicy.Delete)
+        jsonFileBucket = s3.Bucket(self, 'jsonFileBucket', versioned=True)
         newActionTopic = sns.Topic(self, 'newActions')
         lambdaErrorSnsTopic = sns.Topic(self, 'lambdaError')
+
+        bucketResource = jsonFileBucket.node.find_child('Resource')
+        bucketResource.add_override('DeletionPolicy', 'Delete')
 
         with open("aws_action_watchdog/lambda-handler.js", encoding="utf8") as fp:
             handler_code = fp.read()
