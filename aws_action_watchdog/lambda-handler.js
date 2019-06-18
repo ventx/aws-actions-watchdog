@@ -29,7 +29,7 @@ function main() {
 
           s3.getObject(getParams, function(err, data) {
             if (err) {
-              if (err.errorType == "NoSuchKey") {
+              if (err.code == "NoSuchKey") {
                 saveValues(s3, actions, reject, resolve);
               } else {
                 reject(err);

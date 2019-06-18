@@ -1,4 +1,5 @@
-from aws_cdk import cdk, aws_lambda as lambda_, aws_iam as iam, aws_s3 as s3, aws_sns as sns, aws_cloudwatch as cloudwatch
+from aws_cdk import cdk, aws_lambda as lambda_, aws_iam as iam, aws_s3 as s3, aws_sns as sns, aws_cloudwatch as cloudwatch, aws_events as events, aws_events_targets as targets, aws_cloudwatch_actions as actions
+
 
 class AwsActionWatchdogStack(cdk.Stack):
 
@@ -15,21 +16,28 @@ class AwsActionWatchdogStack(cdk.Stack):
         handler_code = handler_code.replace('{{S3BucketName}}', jsonFileBucket.bucket_name)
         handler_code = handler_code.replace('{{SnsTopicArn}}', newActionTopic.topic_arn)
 
-        actionWatchdogLambda = lambda_.Function(self, 'watchdog_Lambda2', 
-            runtime= lambda_.Runtime.NODE_J_S810,
-            code= lambda_.Code.inline(handler_code),
-            handler='index.handler')
+        actionWatchdogLambda = lambda_.Function(self, 'watchdog_Lambda',
+                                                runtime=lambda_.Runtime.NODE_J_S810,
+                                                timeout=15,
+                                                code=lambda_.Code.inline(
+                                                    handler_code),
+                                                handler='index.handler')
 
-        lambdaErrorAlarm = cloudwatch.Alarm(self, 'lambdaErrorAlarm', 
-            evaluation_periods=5, 
-            threshold=0, 
+        schedule = events.Rule(self, 'lambdaScheduleEvent', schedule_expression='rate(24 hours)')
+        schedule.add_target(target=targets.LambdaFunction(actionWatchdogLambda))
+
+        alarm = actionWatchdogLambda.metric_all_errors().new_alarm(
+            self,
+            'lambdaErrorAlarm2',
+            threshold=0,
+            evaluation_periods=1,
             comparison_operator=cloudwatch.ComparisonOperator.GreaterThanThreshold,
-            treat_missing_data=cloudwatch.TreatMissingData.Breaching,
-            alarm_name='Lambda Failed',
-            metric=cloudwatch.Metric(metric_name= 'Errors', namespace='AWS/Lambda',dimensions= {
-                'FunctionName': actionWatchdogLambda.function_name
-            }))
-        
+            treat_missing_data=cloudwatch.TreatMissingData.Missing,
+            alarm_name='Lambda Error',
+            datapoints_to_alarm=1,
+        )
+
+        alarm.add_alarm_action(actions.SnsAction(lambdaErrorSnsTopic))
+
         newActionTopic.grant_publish(actionWatchdogLambda)
         jsonFileBucket.grant_read_write(actionWatchdogLambda)
-        
