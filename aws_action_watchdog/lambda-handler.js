@@ -38,7 +38,6 @@ function main() {
               var oldActions = JSON.parse(data.Body.toString('utf-8'));
               var newActions = actions.filter(x => !oldActions.includes(x));
               writeToSnsTopic(sns,'New Actions', JSON.stringify(newActions, null, 2))
-              console.log(newActions);
               saveValues(s3, actions, reject, resolve);
             }
           });
