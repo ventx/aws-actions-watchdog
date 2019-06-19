@@ -6,7 +6,7 @@ class AwsActionWatchdogStack(cdk.Stack):
     def __init__(self, app: cdk.App, id: str, **kwargs) -> None:
         super().__init__(app, id)
 
-        jsonFileBucket = s3.Bucket(self, 'jsonFileBucket', versioned=True)
+        jsonFileBucket = s3.Bucket(self, 'jsonFileBucket')
         newActionTopic = sns.Topic(self, 'newActions')
         lambdaErrorSnsTopic = sns.Topic(self, 'lambdaError')
 
