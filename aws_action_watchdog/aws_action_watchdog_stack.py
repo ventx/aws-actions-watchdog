@@ -1,4 +1,5 @@
 from aws_cdk import cdk, aws_lambda as lambda_, aws_iam as iam, aws_s3 as s3, aws_sns as sns, aws_cloudwatch as cloudwatch, aws_events as events, aws_events_targets as targets, aws_cloudwatch_actions as actions
+from ventx import aws_cdk_library as awslib
 
 class AwsActionWatchdogStack(cdk.Stack):
 
@@ -9,6 +10,7 @@ class AwsActionWatchdogStack(cdk.Stack):
         newActionTopic = sns.Topic(self, 'newActions')
         lambdaErrorSnsTopic = sns.Topic(self, 'lambdaError')
 
+        awslib.BucketCleanupFunction(self, 'jsonFileBucketCleanup', bucket=jsonFileBucket)
         bucketResource = jsonFileBucket.node.find_child('Resource')
         bucketResource.add_override('DeletionPolicy', 'Delete')
 
