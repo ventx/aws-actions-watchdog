@@ -1,6 +1,5 @@
 from aws_cdk import cdk, aws_lambda as lambda_, aws_iam as iam, aws_s3 as s3, aws_sns as sns, aws_cloudwatch as cloudwatch, aws_events as events, aws_events_targets as targets, aws_cloudwatch_actions as actions
 
-
 class AwsActionWatchdogStack(cdk.Stack):
 
     def __init__(self, app: cdk.App, id: str, **kwargs) -> None:
@@ -20,16 +19,16 @@ class AwsActionWatchdogStack(cdk.Stack):
         handler_code = handler_code.replace('{{SnsTopicArn}}', newActionTopic.topic_arn)
 
         actionWatchdogLambda = lambda_.Function(self, 'watchdog_Lambda',
-                                                runtime=lambda_.Runtime.NODE_J_S810,
+                                                runtime=lambda_.Runtime.NODEJS810,
                                                 timeout=15,
                                                 code=lambda_.Code.inline(
                                                     handler_code),
                                                 handler='index.handler')
 
-        schedule = events.Rule(self, 'lambdaScheduleEvent', schedule_expression='rate(24 hours)')
+        schedule = events.Rule(self, 'lambdaScheduleEvent', schedule=events.Schedule.rate(interval=24, unit=events.TimeUnit.Hour))
         schedule.add_target(target=targets.LambdaFunction(actionWatchdogLambda))
 
-        alarm = actionWatchdogLambda.metric_all_errors().new_alarm(
+        alarm = actionWatchdogLambda.metric_all_errors().create_alarm(
             self,
             'lambdaErrorAlarm',
             threshold=0,
