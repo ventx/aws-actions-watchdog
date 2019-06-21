@@ -6,6 +6,6 @@ from aws_action_watchdog.aws_action_watchdog_stack import AwsActionWatchdogStack
 
 
 app = cdk.App()
-AwsActionWatchdogStack(app, "aws-action-watchdog-cdk-1")
+AwsActionWatchdogStack(app, "aws-action-watchdog-cdk")
 
 app.run()
