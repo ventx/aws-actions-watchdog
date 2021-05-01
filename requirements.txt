@@ -53,7 +53,7 @@ pycodestyle==2.5.0
 python-dateutil==2.8.0
 PyYAML==5.4
 rope==0.14.0
-rsa==3.4.2
+rsa==4.7
 s3transfer==0.2.1
 six==1.12.0
 typing-extensions==3.7.4
